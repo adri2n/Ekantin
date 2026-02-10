@@ -65,7 +65,7 @@ if (class_exists('MenuModel')) {
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item py-2 text-danger" href="../login.php">
+                        <a class="dropdown-item py-2 text-danger" href="../logout.php">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </a>
                     </li>

@@ -50,7 +50,7 @@ $pending = $res_pending->fetch_assoc()['total'] ?? 0;
                     <li class="nav-item"><a class="nav-link" href="manage_menu.php"><i class="bi bi-grid me-2"></i> Kelola Menu</a></li>
                     <li class="nav-item"><a class="nav-link" href="report.php"><i class="bi bi-file-earmark-text me-2"></i> Laporan</a></li>
                     <hr class="text-white">
-                    <li class="nav-item"><a class="nav-link text-danger" href="../login.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="../logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                 </ul>
             </div>
         </nav>

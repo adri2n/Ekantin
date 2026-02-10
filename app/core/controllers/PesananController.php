@@ -12,19 +12,19 @@ class PesananController {
 
     // 1. Simpan Keranjang JS ke Session PHP
     public function preCheckout() {
-        // Bersihkan buffer output sebelumnya (jika ada error/spasi tak sengaja)
+        // Bersihkan buffer agar tidak ada spasi gaib di awal
         ob_clean(); 
         
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
         if (!empty($data['cart'])) {
-            $_SESSION['final_cart'] = $data['cart']; // Simpan ke session
+            $_SESSION['final_cart'] = $data['cart']; 
             echo json_encode(['status' => 'success']);
-            exit; // PENTING: Hentikan script di sini!
+            exit; // <--- WAJIB ADA: Agar tidak ada karakter tambahan terkirim
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Keranjang kosong']);
-            exit; // PENTING: Hentikan script di sini!
+            exit; // <--- WAJIB ADA
         }
     }
 
@@ -67,16 +67,16 @@ class PesananController {
 
     // 3. API Detail Pesanan
     public function getDetail($id) {
-        ob_clean(); // Bersihkan buffer
+        ob_clean(); 
         $details = $this->pesananModel->getDetailPesanan($id);
         header('Content-Type: application/json');
         echo json_encode($details);
-        exit; // Hentikan script
+        exit; // <--- WAJIB ADA
     }
 
     // 4. API Update Status
     public function updateStatus() {
-        ob_clean(); // Bersihkan buffer
+        ob_clean(); 
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
 
@@ -87,7 +87,7 @@ class PesananController {
                 echo json_encode(['status' => 'error', 'message' => 'Gagal update status.']);
             }
         }
-        exit; // Hentikan script
+        exit; // <--- WAJIB ADA
     }
 }
 

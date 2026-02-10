@@ -1,6 +1,5 @@
 <?php
 // Tentukan BASE_PATH agar tidak bingung dengan "../"
-// Naik 3 tingkat dari: app/core/assets/ -> ke Root Folder Ekantin
 define('BASE_PATH', realpath(__DIR__ . '/../../../'));
 
 define('DB_HOST', 'localhost');
@@ -8,9 +7,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'db_ekantin');
 
-// Autoloader Pintar (Otomatis cari file class)
+// Autoloader Pintar
 spl_autoload_register(function ($class) {
-    // Daftar folder di mana class disimpan
     $paths = [
         BASE_PATH . '/app/core/models/',
         BASE_PATH . '/app/core/controllers/',
@@ -29,4 +27,3 @@ spl_autoload_register(function ($class) {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-?>
