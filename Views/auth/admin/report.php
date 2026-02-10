@@ -71,7 +71,7 @@ $laporan = $menuModel->getLaporanPenjualan();
                     </li>
                     <hr class="text-white">
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="../login.php">
+                        <a class="nav-link text-danger" href="../logout.php">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </a>
                     </li>
