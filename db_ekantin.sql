@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 10 Feb 2026 pada 21.59
+-- Waktu pembuatan: 11 Feb 2026 pada 00.35
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -35,6 +35,26 @@ CREATE TABLE `detail_pesanan` (
   `subtotal` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `detail_pesanan`
+--
+
+INSERT INTO `detail_pesanan` (`id_detail`, `id_pesanan`, `id_menu`, `jumlah`, `subtotal`) VALUES
+(3, 1, 1, 2, 30000.00),
+(4, 3, 2, 1, 5000.00),
+(5, 3, 4, 1, 18000.00),
+(6, 4, 6, 1, 18000.00),
+(7, 4, 5, 1, 18000.00),
+(8, 5, 5, 1, 18000.00),
+(9, 5, 6, 1, 18000.00),
+(10, 5, 2, 1, 5000.00),
+(11, 6, 1, 1, 15000.00),
+(12, 6, 2, 1, 5000.00),
+(13, 6, 7, 1, 5000.00),
+(14, 7, 1, 1, 15000.00),
+(15, 7, 2, 1, 5000.00),
+(16, 7, 7, 1, 5000.00);
+
 -- --------------------------------------------------------
 
 --
@@ -50,6 +70,18 @@ CREATE TABLE `menu` (
   `kategori` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `menu`
+--
+
+INSERT INTO `menu` (`id_menu`, `nama_menu`, `harga`, `stok`, `gambar`, `kategori`) VALUES
+(1, 'Nasi Goreng Kantin', 15000.00, 48, 'default.jpg', 'Makanan'),
+(2, 'Es Teh Manis', 5000.00, 96, 'default.jpg', 'Minuman'),
+(4, 'Nasi Ayam', 18000.00, 9, 'default.jpg', 'Makanan'),
+(5, 'Nasi Ayam Bakar', 18000.00, 18, 'default.jpg', 'Makanan'),
+(6, 'ikan bakar', 18000.00, 18, 'default.jpg', 'Makanan'),
+(7, 'Air Mineral', 5000.00, 98, NULL, 'Minuman');
+
 -- --------------------------------------------------------
 
 --
@@ -61,6 +93,7 @@ CREATE TABLE `pesanan` (
   `id_user` int(11) DEFAULT NULL,
   `tgl_pesanan` datetime DEFAULT NULL,
   `total_bayar` decimal(10,2) DEFAULT NULL,
+  `metode_pembayaran` varchar(50) DEFAULT NULL,
   `status` enum('pending','proses','siap','selesai','batal') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -68,9 +101,14 @@ CREATE TABLE `pesanan` (
 -- Dumping data untuk tabel `pesanan`
 --
 
-INSERT INTO `pesanan` (`id_pesanan`, `id_user`, `tgl_pesanan`, `total_bayar`, `status`) VALUES
-(1, 1, '2026-02-11 03:54:05', 30000.00, 'selesai'),
-(2, 1, '2026-02-11 03:54:15', 30000.00, 'selesai');
+INSERT INTO `pesanan` (`id_pesanan`, `id_user`, `tgl_pesanan`, `total_bayar`, `metode_pembayaran`, `status`) VALUES
+(1, 1, '2026-02-11 03:54:05', 30000.00, NULL, 'selesai'),
+(2, 1, '2026-02-11 03:54:15', 30000.00, NULL, 'selesai'),
+(3, 2, '2026-02-10 23:28:50', 23000.00, 'QRIS', 'selesai'),
+(4, 2, '2026-02-11 00:00:21', 36000.00, 'Tunai', 'selesai'),
+(5, 3, '2026-02-11 00:07:45', 41000.00, 'E-Wallet', 'selesai'),
+(6, 3, '2026-02-11 00:25:41', 25000.00, 'Transfer Bank', 'selesai'),
+(7, 4, '2026-02-11 00:33:50', 25000.00, 'QRIS', 'pending');
 
 -- --------------------------------------------------------
 
@@ -90,8 +128,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `username`, `password`, `role`) VALUES
-(1, 'admin_kantin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
-(2, 'budi_pelanggan', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pelanggan');
+(1, 'admin_kantin', '$2y$10$oZTUdCfJMdkzl/plW3xJregp.WkJBoV4MQYOu0Yi/xugPjpsHZnsW', 'admin'),
+(2, 'Budi', '$2y$10$Sqj0umPwH5kgAqfcrBPXrei/5HJTzHRmBGDZn.oM7c7/JXSyod0ci', 'pelanggan'),
+(3, 'Sarah', '$2y$10$tz4utRvgpOuk0/CkXFqc9e3mJA5BOukTVts0u3br264U84yWpI3Py', 'pelanggan'),
+(4, 'farhan', '$2y$10$YooyOVDj7zZoZcT.PZayUeaher/gC5sGIMCmjHrV6IieKQVmtfpPi', 'pelanggan');
 
 --
 -- Indexes for dumped tables
@@ -133,25 +173,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `detail_pesanan`
 --
 ALTER TABLE `detail_pesanan`
-  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT untuk tabel `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `pesanan`
 --
 ALTER TABLE `pesanan`
-  MODIFY `id_pesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_pesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
