@@ -1,5 +1,5 @@
 <?php
-require_once '../../config.php';
+require_once '../assets/config.php';
 
 class MenuController {
     private $model;

@@ -1,5 +1,5 @@
 <?php 
-require_once '../../config.php';
+include_once '../../../app/core/assets/config.php'; 
 $menuModel = new MenuModel();
 $menus = $menuModel->getAllMenu();
 ?>
@@ -54,7 +54,7 @@ $menus = $menuModel->getAllMenu();
                 <h5 class="modal-title">Form Tambah Menu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="../../app/controllers/MenuController.php" method="POST">
+            <form action="../../../app/core/controllers/MenuController.php" method="POST">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Nama Menu</label>

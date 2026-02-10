@@ -1,5 +1,5 @@
 <?php 
-require_once '../../config.php';
+include_once '../../../app/core/assets/config.php'; 
 $menuModel = new MenuModel();
 $laporan = $menuModel->getLaporanPenjualan();
 ?>
