@@ -20,6 +20,7 @@ if (class_exists('MenuModel')) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../../app/core/assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -29,18 +30,37 @@ if (class_exists('MenuModel')) {
             <i class="bi bi-shop-window me-1"></i>e-Kantin
         </a>
         
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center gap-2">
             <button class="btn btn-outline-light position-relative rounded-pill px-3 py-1 btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart">
-                <i class="bi bi-cart3" id="cartIcon" style="display: inline-block;"></i> 
+                <i class="bi bi-cart3" id="cartIcon"></i> 
                 <span class="d-none d-md-inline ms-1 small">Keranjang</span>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark border border-light" id="cartCount">
-                    0
-                </span>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark border border-light" id="cartCount">0</span>
             </button>
-            <a href="../login.php" class="btn btn-link text-white ms-2" title="Keluar">
-                <i class="bi bi-box-arrow-right"></i>
-            </a>
-        </div>
+
+            <div class="dropdown">
+                <a href="#" class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                    <div class="bg-white text-success rounded-circle d-flex justify-content-center align-items-center me-1" style="width: 30px; height: 30px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <span class="d-none d-md-inline small fw-bold">
+                        <?= htmlspecialchars($_SESSION['username'] ?? 'Akun') ?>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                    <li>
+                        <a class="dropdown-item py-2" href="profile.php">
+                            <i class="bi bi-gear me-2 text-secondary"></i> Edit Profil
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item py-2 text-danger" href="../login.php">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            </div>
     </div>
 </nav>
 
@@ -60,7 +80,6 @@ if (class_exists('MenuModel')) {
 </div>
 
 <div class="container pb-5">
-    
     <div class="d-flex justify-content-center mb-4 gap-2">
         <button class="btn btn-success rounded-pill px-3 py-1 btn-sm shadow-sm" onclick="filterCategory('all')">Semua</button>
         <button class="btn btn-light text-secondary rounded-pill px-3 py-1 btn-sm shadow-sm border" onclick="filterCategory('Makanan')">Makanan</button>
@@ -83,7 +102,8 @@ if (class_exists('MenuModel')) {
                         
                         <div class="mt-auto d-flex justify-content-between align-items-center">
                             <span class="price-tag small">Rp <?= number_format($m['harga'], 0, ',', '.') ?></span>
-                            <button class="btn-add shadow-sm" onclick="addToCartJS(<?= $m['id_menu'] ?>, '<?= htmlspecialchars($m['nama_menu']) ?>', <?= $m['harga'] ?>)">
+                            
+                            <button class="btn-add shadow-sm" onclick="addToCartJS(<?= $m['id_menu'] ?>, '<?= htmlspecialchars($m['nama_menu'], ENT_QUOTES) ?>', <?= $m['harga'] ?>)">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>
@@ -100,33 +120,30 @@ if (class_exists('MenuModel')) {
         <h5 class="offcanvas-title fs-6"><i class="bi bi-basket me-2"></i>Keranjang Pesanan</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
     </div>
-    
     <div class="offcanvas-body p-0">
         <div id="emptyCartMsg" class="text-center py-5 text-muted">
             <i class="bi bi-cart-x fs-1 opacity-25"></i>
             <p class="small mt-2">Belum ada pesanan.</p>
         </div>
-        
         <div id="cartList" class="pb-5"></div>
     </div>
-
     <div class="p-3 border-top bg-white">
         <div class="d-flex justify-content-between mb-3">
             <span class="fw-bold">Total:</span>
             <span class="fw-bold text-success" id="cartTotal">Rp 0</span>
         </div>
-        <button class="btn btn-success w-100 rounded-pill shadow-sm" id="btnCheckout" disabled>
-            Checkout Sekarang
+        <button class="btn btn-success w-100 rounded-pill shadow-sm" id="btnCheckout" onclick="processCheckout()" disabled>
+            Checkout Sekarang <i class="bi bi-arrow-right ms-2"></i>
         </button>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // --- LOGIC KERANJANG (JAVASCRIPT) ---
+    // --- Javascript Logic ---
     let cart = [];
 
-    // 1. Tambah ke Keranjang (Dari Menu)
+    // Fungsi Tambah ke Keranjang
     function addToCartJS(id, nama, harga) {
         let item = cart.find(i => i.id === id);
         if (item) {
@@ -136,28 +153,26 @@ if (class_exists('MenuModel')) {
         }
         updateCartUI();
         triggerShakeAnimation();
+        
+        // Opsional: Buka otomatis keranjang saat tambah
+        // var bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasCart'));
+        // bsOffcanvas.show();
     }
 
-    // 2. Ubah Jumlah (+/-)
     function changeQty(id, delta) {
         let item = cart.find(i => i.id === id);
         if (item) {
             item.qty += delta;
-            if (item.qty <= 0) {
-                removeFromCart(id); // Hapus jika 0
-            } else {
-                updateCartUI();
-            }
+            if (item.qty <= 0) removeFromCart(id);
+            else updateCartUI();
         }
     }
 
-    // 3. Hapus Item (Sampah)
     function removeFromCart(id) {
         cart = cart.filter(i => i.id !== id);
         updateCartUI();
     }
 
-    // 4. Update Tampilan Keranjang
     function updateCartUI() {
         const list = document.getElementById('cartList');
         const emptyMsg = document.getElementById('emptyCartMsg');
@@ -180,7 +195,6 @@ if (class_exists('MenuModel')) {
                 total += item.harga * item.qty;
                 count += item.qty;
                 
-                // HTML Item Keranjang dengan Tombol +/-/Hapus
                 list.innerHTML += `
                 <div class="cart-item d-flex align-items-center gap-3 animate__animated animate__fadeIn">
                     <img src="https://placehold.co/100x100/e67e22/ffffff?text=${encodeURI(item.nama)}" class="cart-item-img">
@@ -189,37 +203,71 @@ if (class_exists('MenuModel')) {
                         <div class="text-success small fw-bold">Rp ${item.harga.toLocaleString('id-ID')}</div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                         ${item.qty === 1 
+                        ${item.qty === 1 
                             ? `<button class="btn-qty btn-trash text-danger border-danger" onclick="removeFromCart(${item.id})"><i class="bi bi-trash"></i></button>`
                             : `<button class="btn-qty" onclick="changeQty(${item.id}, -1)"><i class="bi bi-dash"></i></button>`
                         }
                         <span class="small fw-bold" style="width:15px; text-align:center">${item.qty}</span>
                         <button class="btn-qty" onclick="changeQty(${item.id}, 1)"><i class="bi bi-plus"></i></button>
                     </div>
-                </div>
-                `;
+                </div>`;
             });
         }
-        
         badge.innerText = count;
         totalLabel.innerText = 'Rp ' + total.toLocaleString('id-ID');
     }
 
-    // 5. Animasi Shake Ikon Keranjang
     function triggerShakeAnimation() {
         const icon = document.getElementById('cartIcon');
-        const badge = document.getElementById('cartCount');
-        
         icon.classList.remove('cart-animate');
-        badge.classList.remove('animate__animated', 'animate__bounceIn');
-        
-        void icon.offsetWidth; // Trigger reflow
-        
+        void icon.offsetWidth; 
         icon.classList.add('cart-animate');
-        badge.classList.add('animate__animated', 'animate__bounceIn');
     }
 
-    // 6. Filter Menu (Pencarian)
+    // Fungsi Checkout (Pindah Halaman)
+    function processCheckout() {
+        const btn = document.getElementById('btnCheckout');
+        
+        if (cart.length === 0) {
+            Swal.fire('Ups!', 'Keranjang masih kosong.', 'warning');
+            return;
+        }
+
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengalihkan...';
+        btn.disabled = true;
+
+        // Kirim data ke PHP Session lalu Redirect
+        fetch('/ekantin/app/core/controllers/PesananController.php?action=pre_checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cart: cart })
+        })
+        .then(response => {
+            // Cek jika respon bukan OK (misal 404 atau 500)
+            if (!response.ok) {
+                throw new Error('Terjadi kesalahan server: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                window.location.href = 'checkout.php';
+            } else {
+                throw new Error(data.message || 'Gagal memproses checkout');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Tampilkan pesan error agar tahu apa masalahnya
+            Swal.fire('Gagal!', 'Terjadi error: ' + error.message, 'error');
+            
+            // Kembalikan tombol seperti semula
+            btn.disabled = false;
+            btn.innerHTML = 'Checkout Sekarang <i class="bi bi-arrow-right ms-2"></i>';
+        });
+    }
+
+    // Filter
     function filterMenu() {
         let input = document.getElementById('txtSearch').value.toLowerCase();
         let items = document.getElementsByClassName('menu-item');
@@ -228,7 +276,6 @@ if (class_exists('MenuModel')) {
             item.style.display = title.includes(input) ? "" : "none";
         }
     }
-
     function filterCategory(cat) {
         let items = document.getElementsByClassName('menu-item');
         for (let item of items) {
@@ -236,82 +283,6 @@ if (class_exists('MenuModel')) {
             item.style.display = (cat === 'all' || itemCat === cat) ? "" : "none";
         }
     }
-
-    <?php
-require_once __DIR__ . '/../assets/config.php';
-
-class PesananController {
-    private $pesananModel;
-    private $menuModel;
-
-    public function __construct() {
-        $this->pesananModel = new PesananModel();
-        $this->menuModel = new MenuModel();
-    }
-
-    // 1. Simpan Keranjang JS ke Session PHP
-    public function preCheckout() {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (!empty($data['cart'])) {
-            $_SESSION['final_cart'] = $data['cart']; // Simpan ke session
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Keranjang kosong']);
-        }
-    }
-
-    // 2. Proses Pesanan Akhir (Dari Halaman Checkout)
-    public function processOrder() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (!isset($_SESSION['user_id']) || empty($_SESSION['final_cart'])) {
-                header("Location: ../../../Views/auth/pelanggan/menu_list.php");
-                exit;
-            }
-
-            $id_user = $_SESSION['user_id'];
-            $cart = $_SESSION['final_cart'];
-            $metode = $_POST['metode_pembayaran']; // Ambil dari form
-            $total_bayar = 0;
-
-            foreach ($cart as $item) {
-                $total_bayar += $item['harga'] * $item['qty'];
-            }
-
-            // Simpan ke DB dengan Metode Pembayaran
-            $id_pesanan = $this->pesananModel->createPesanan($id_user, $total_bayar, $metode);
-
-            if ($id_pesanan) {
-                foreach ($cart as $item) {
-                    $subtotal = $item['harga'] * $item['qty'];
-                    $this->pesananModel->createDetail($id_pesanan, $item['id'], $item['qty'], $subtotal);
-                    $this->menuModel->updateStok($item['id'], $item['qty']);
-                }
-                
-                // Hapus session keranjang
-                unset($_SESSION['final_cart']);
-                
-                // Redirect Sukses
-                echo "<script>
-                        alert('Pesanan Berhasil! Metode: $metode');
-                        window.location = '../../../Views/auth/pelanggan/menu_list.php';
-                      </script>";
-            }
-        }
-    }
-}
-
-// Router Sederhana
-if (isset($_GET['action'])) {
-    $controller = new PesananController();
-    if ($_GET['action'] == 'pre_checkout') {
-        $controller->preCheckout();
-    } elseif ($_GET['action'] == 'process_order') {
-        $controller->processOrder();
-    }
-}
-?>
 </script>
 
 </body>

@@ -26,5 +26,25 @@ class PesananModel {
         $stmt->bind_param("iiid", $id_pesanan, $id_menu, $jumlah, $subtotal);
         return $stmt->execute();
     }
+    public function getDetailPesanan($id_pesanan) {
+        $sql = "SELECT d.jumlah, d.subtotal, m.nama_menu, m.harga, m.gambar 
+                FROM detail_pesanan d 
+                JOIN menu m ON d.id_menu = m.id_menu 
+                WHERE d.id_pesanan = ?";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id_pesanan);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function updateStatus($id, $status) {
+        $stmt = $this->db->prepare("UPDATE pesanan SET status = ? WHERE id_pesanan = ?");
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
+    }
 }
+
 ?>
