@@ -1,39 +1,75 @@
 <?php
-require_once '../../config.php';
+require_once __DIR__ . '/../assets/config.php';
 
 class PesananController {
-    private $menuModel;
     private $pesananModel;
+    private $menuModel;
 
     public function __construct() {
+        $this->pesananModel = new PesananModel();
         $this->menuModel = new MenuModel();
-        $this->pesananModel = new PesananModel(); // Pastikan class ini sudah dibuat
     }
 
-    public function checkout() {
-        if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    // 1. Simpan Keranjang JS ke Session PHP
+    public function preCheckout() {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if (!empty($data['cart'])) {
+            $_SESSION['final_cart'] = $data['cart']; // Simpan ke session
+            echo json_encode(['status' => 'success']);
+        } else {
             echo json_encode(['status' => 'error', 'message' => 'Keranjang kosong']);
-            return;
         }
+    }
 
-        $id_user = $_SESSION['user_id'];
-        $total_bayar = 0;
-        
-        // Hitung total dan validasi stok (Sesuai SRS-F-004)
-        foreach ($_SESSION['cart'] as $id => $item) {
-            $total_bayar += $item['harga'] * $item['qty'];
-        }
-
-        // Simpan ke database (Header & Detail)
-        $id_pesanan = $this->pesananModel->createPesanan($id_user, $total_bayar);
-        
-        if ($id_pesanan) {
-            foreach ($_SESSION['cart'] as $id => $item) {
-                $this->pesananModel->createDetail($id_pesanan, $id, $item['qty'], $item['harga'] * $item['qty']);
-                $this->menuModel->updateStok($id, $item['qty']); // Kurangi stok (Sesuai Skenario Normal)
+    // 2. Proses Pesanan Akhir (Dari Halaman Checkout)
+    public function processOrder() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!isset($_SESSION['user_id']) || empty($_SESSION['final_cart'])) {
+                header("Location: ../../../Views/auth/pelanggan/menu_list.php");
+                exit;
             }
-            unset($_SESSION['cart']); // Kosongkan keranjang
-            echo json_encode(['status' => 'success', 'message' => 'Pesanan berhasil dibuat!']);
+
+            $id_user = $_SESSION['user_id'];
+            $cart = $_SESSION['final_cart'];
+            $metode = $_POST['metode_pembayaran']; // Ambil dari form
+            $total_bayar = 0;
+
+            foreach ($cart as $item) {
+                $total_bayar += $item['harga'] * $item['qty'];
+            }
+
+            // Simpan ke DB dengan Metode Pembayaran
+            $id_pesanan = $this->pesananModel->createPesanan($id_user, $total_bayar, $metode);
+
+            if ($id_pesanan) {
+                foreach ($cart as $item) {
+                    $subtotal = $item['harga'] * $item['qty'];
+                    $this->pesananModel->createDetail($id_pesanan, $item['id'], $item['qty'], $subtotal);
+                    $this->menuModel->updateStok($item['id'], $item['qty']);
+                }
+                
+                // Hapus session keranjang
+                unset($_SESSION['final_cart']);
+                
+                // Redirect Sukses
+                echo "<script>
+                        alert('Pesanan Berhasil! Metode: $metode');
+                        window.location = '../../../Views/auth/pelanggan/menu_list.php';
+                      </script>";
+            }
         }
     }
 }
+
+// Router Sederhana
+if (isset($_GET['action'])) {
+    $controller = new PesananController();
+    if ($_GET['action'] == 'pre_checkout') {
+        $controller->preCheckout();
+    } elseif ($_GET['action'] == 'process_order') {
+        $controller->processOrder();
+    }
+}
+?>

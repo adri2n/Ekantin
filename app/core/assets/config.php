@@ -1,21 +1,20 @@
 <?php
-// Tentukan Path Root (Folder Utama Ekantin)
-// Jika config.php ada di folder: app/core/assets/
-// Maka kita perlu naik 3 level: assets -> core -> app -> Root
-define('BASE_PATH', dirname(__DIR__, 3)); 
+// Tentukan BASE_PATH agar tidak bingung dengan "../"
+// Naik 3 tingkat dari: app/core/assets/ -> ke Root Folder Ekantin
+define('BASE_PATH', realpath(__DIR__ . '/../../../'));
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'db_ekantin');
 
-// Autoload yang lebih pintar (Menggunakan Absolute Path)
+// Autoloader Pintar (Otomatis cari file class)
 spl_autoload_register(function ($class) {
-    // Daftar folder tempat class Anda disimpan (Sesuai struktur file Anda)
+    // Daftar folder di mana class disimpan
     $paths = [
-        BASE_PATH . '/app/core/models/',      // Untuk MenuModel, PesananModel
-        BASE_PATH . '/app/core/controllers/', // Untuk MenuController
-        BASE_PATH . '/app/core/'              // Untuk Auth, Database
+        BASE_PATH . '/app/core/models/',
+        BASE_PATH . '/app/core/controllers/',
+        BASE_PATH . '/app/core/'
     ];
 
     foreach ($paths as $path) {

@@ -27,3 +27,199 @@ body {
 .btn-primary:hover {
     background-color: var(--secondary-color);
 }
+
+
+/* app/core/assets/style.css */
+
+:root {
+    --primary-color: #198754;
+    --accent-color: #fd7e14;
+    --bg-light: #f8f9fa;
+    --text-dark: #343a40;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+/* --- Hero Banner (Compact) --- */
+.hero-banner {
+    background: linear-gradient(135deg, #198754 0%, #0f5132 100%);
+    color: white;
+    padding: 30px 0 50px 0;
+    margin-bottom: 25px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.2);
+}
+
+.hero-title {
+    font-weight: 700;
+    font-size: 2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- Pencarian --- */
+.search-container .input-group {
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.search-container input {
+    height: 40px;
+    font-size: 0.95rem;
+}
+
+.search-container .input-group-text {
+    background: white;
+    padding-left: 20px;
+}
+
+/* --- Kartu Menu (Compact) --- */
+.card-menu {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    transition: all 0.2s;
+    height: 100%;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card-menu:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+    height: 140px;
+    object-fit: cover;
+}
+
+/* --- Komponen Kartu --- */
+.badge-category {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.7rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--text-dark);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 3px;
+    color: var(--text-dark);
+}
+
+.price-tag {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* Tombol Tambah di Card */
+.btn-add {
+    background-color: var(--accent-color);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-add:hover {
+    background-color: #e36d0d;
+    transform: scale(1.1);
+}
+
+/* --- KERANJANG SAMPING (OFFCANVAS) --- */
+.offcanvas-cart {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.offcanvas-header {
+    background: var(--primary-color);
+    color: white;
+}
+
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    transition: background 0.2s;
+}
+
+.cart-item:hover {
+    background-color: #f9f9f9;
+}
+
+.cart-item-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* Tombol Qty di Keranjang (+/-) */
+.btn-qty {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.btn-qty:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.btn-trash:hover {
+    background: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+
+/* Animasi Shake (Goyang) */
+@keyframes shakeCart {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.cart-animate {
+    animation: shakeCart 0.5s ease-in-out;
+    color: #ffc107 !important;
+}
+
+/* Footer */
+footer {
+    background-color: white;
+    margin-top: 30px;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}

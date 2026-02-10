@@ -6,21 +6,21 @@ class PesananModel {
         $this->db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     }
 
-    // Merealisasikan Operasi createPesanan [cite: 51]
-    public function createPesanan($id_user, $total_bayar) {
+    // Update parameter untuk menerima metode pembayaran
+    public function createPesanan($id_user, $total_bayar, $metode) {
         $tgl = date('Y-m-d H:i:s');
-        $status = 'pending'; // Status awal sesuai Statechart 
+        $status = 'pending'; 
         
-        $stmt = $this->db->prepare("INSERT INTO pesanan (id_user, tgl_pesanan, total_bayar, status) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("isds", $id_user, $tgl, $total_bayar, $status);
+        // Tambahkan metode_pembayaran di query
+        $stmt = $this->db->prepare("INSERT INTO pesanan (id_user, tgl_pesanan, total_bayar, metode_pembayaran, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isdss", $id_user, $tgl, $total_bayar, $metode, $status);
         
         if ($stmt->execute()) {
-            return $this->db->insert_id; // Mengembalikan ID pesanan yang baru dibuat
+            return $this->db->insert_id;
         }
         return false;
     }
 
-    // Tabel perantara Many-to-Many [cite: 64]
     public function createDetail($id_pesanan, $id_menu, $jumlah, $subtotal) {
         $stmt = $this->db->prepare("INSERT INTO detail_pesanan (id_pesanan, id_menu, jumlah, subtotal) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("iiid", $id_pesanan, $id_menu, $jumlah, $subtotal);

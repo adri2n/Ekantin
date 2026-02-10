@@ -18,14 +18,16 @@ class MenuController {
                 'gambar' => $_POST['gambar'] // Sederhananya kita input path teks dulu
             ];
             if ($this->model->insertMenu($data)) {
-                header("Location: ../../views/admin/manage_menu.php?status=success");
+            header("Location: /ekantin/Views/auth/admin/manage_menu.php?status=success");
+            exit;
             }
         }
     }
 
     public function hapus($id) {
-        if ($this->model->deleteMenu($id)) {
-            header("Location: ../../views/admin/manage_menu.php?status=deleted");
+            if ($this->model->deleteMenu($id)) {
+            header("Location: /ekantin/Views/auth/admin/manage_menu.php?status=deleted");
+            exit;
         }
     }
 }

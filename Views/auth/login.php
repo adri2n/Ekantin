@@ -8,6 +8,7 @@
             <h3 class="fw-bold text-success">e-Kantin</h3>
             <p class="text-muted">Silakan masuk untuk memesan</p>
         </div>
+        
         <form action="../../app/core/Auth.php" method="POST">
             <div class="mb-3">
                 <label class="form-label">Username</label>
@@ -18,6 +19,10 @@
                 <input type="password" name="password" class="form-control" required placeholder="******">
             </div>
             <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Login</button>
+            
+            <div class="text-center mt-3">
+                <a href="forgot_password.php" class="text-decoration-none text-muted small">Lupa Password?</a>
+            </div>
         </form>
     </div>
 </div>
