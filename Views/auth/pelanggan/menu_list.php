@@ -1,6 +1,17 @@
 <?php 
 require_once '../../../app/core/assets/config.php'; 
 
+// --- START SECURITY CHECK ---
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /ekantin/Views/auth/login.php");
+    exit;
+}
+if ($_SESSION['role'] != 'pelanggan') {
+    header("Location: /ekantin/Views/auth/admin/dashboard.php");
+    exit;
+}
+// --- END SECURITY CHECK ---
+
 if (class_exists('MenuModel')) {
     $menuModel = new MenuModel();
     $menus = $menuModel->getAllMenu();

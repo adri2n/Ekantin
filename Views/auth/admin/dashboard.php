@@ -1,5 +1,16 @@
 <?php 
-require_once '../../../app/core/assets/config.php'; 
+require_once '../../../app/core/assets/config.php';
+
+// --- START SECURITY CHECK ---
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /ekantin/Views/auth/login.php");
+    exit;
+}
+if ($_SESSION['role'] != 'admin') {
+    header("Location: /ekantin/Views/auth/pelanggan/menu_list.php");
+    exit;
+}
+// --- END SECURITY CHECK ---
 
 // Koneksi Manual
 $db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);

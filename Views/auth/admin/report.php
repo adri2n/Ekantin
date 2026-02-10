@@ -1,6 +1,17 @@
 <?php 
 require_once '../../../app/core/assets/config.php'; 
 
+// --- START SECURITY CHECK ---
+if (!isset($_SESSION['user_id'])) {
+    header("Location: /ekantin/Views/auth/login.php");
+    exit;
+}
+if ($_SESSION['role'] != 'admin') {
+    header("Location: /ekantin/Views/auth/pelanggan/menu_list.php");
+    exit;
+}
+// --- END SECURITY CHECK ---
+
 // Cek Class MenuModel
 if (!class_exists('MenuModel')) {
     die("Error: Class MenuModel tidak ditemukan. Cek path di config.php");
